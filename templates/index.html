@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Story2Scene | AI Video Generator</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Decorational background elements -->
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="glass-overlay"></div>
+
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-icon">✨</span>
+                <span class="logo-text">Story2Scene</span>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <header class="hero">
+                <h1 class="hero-title">Bring your stories to <span class="gradient-text">Life</span></h1>
+                <p class="hero-subtitle">Enter a prompt, and our AI will generate a complete narrative, voiceover, and synchronized visuals.</p>
+            </header>
+
+            <div class="generator-card glass-panel">
+                <form id="generate-form">
+                    <div class="form-group">
+                        <label for="prompt">What's your story about?</label>
+                        <textarea id="prompt" name="prompt" rows="4" placeholder="A brave astronaut discovering a neon-lit alien city..." required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <label for="scenes">Number of Scenes</label>
+                            <input type="number" id="scenes" name="scenes" value="4" min="1" max="10" required>
+                        </div>
+                        <div class="form-group half-width">
+                            <label for="style">Visual Style</label>
+                            <select id="style" name="style">
+                                <option value="cinematic">Cinematic</option>
+                                <option value="comic-book">Comic Book</option>
+                                <option value="anime">Anime</option>
+                                <option value="pixel-art">Pixel Art</option>
+                                <option value="watercolor">Watercolor</option>
+                                <option value="3d-render">3D Render</option>
+                                <option value="dramatic" selected>Dramatic</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="format_type">Story Response Format</label>
+                        <select id="format_type" name="format_type">
+                            <option value="structured" selected>Structured (Modern)</option>
+                            <option value="legacy">Legacy Format</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="generate-btn">
+                        <span class="btn-text">Generate Video</span>
+                        <div class="btn-loader loader-hidden"></div>
+                    </button>
+                </form>
+            </div>
+
+            <div id="result-section" class="result-section hidden glass-panel">
+                <h2 class="result-title">Your Masterpiece is Ready</h2>
+                <div class="video-container">
+                    <video id="output-video" controls>
+                        <source id="video-source" src="" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="download-actions">
+                    <a id="download-link" href="#" class="action-btn secondary-btn" download>📥 Download Video</a>
+                </div>
+            </div>
+            
+            <div id="error-section" class="error-section hidden glass-panel">
+                <div class="error-icon">⚠️</div>
+                <h3 class="error-title">Generation Failed</h3>
+                <p id="error-message" class="error-text">An unknown error occurred.</p>
+            </div>
+            
+        </main>
+        
+        <footer class="footer">
+            <p>Powered by Story2Scene AI Engine</p>
+        </footer>
+    </div>
+    
+    <script src="/static/js/main.js"></script>
+</body>
+</html>
