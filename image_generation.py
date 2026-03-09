@@ -1,4 +1,4 @@
-from openai import OpenAI
+from google import genai
 from PIL import Image
 from io import BytesIO
 import os
@@ -7,22 +7,22 @@ import requests
 import logging
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__) # Logger for image_generation.py
+logger = logging.getLogger(__name__)  # Logger for image_generation.py
 
 load_dotenv()
 
 class ImageModel:
     def __init__(self):
-        logger.info("Initializing OpenAI image client")
-        api_key = os.getenv("OPENAI_API_KEY")
+        logger.info("Initializing Gemini image client")
+        api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
-            raise ValueError("OPENAI_API_KEY environment variable not set for ImageModel.")
-        self.client = OpenAI(api_key=api_key)
-        logger.info("Initialized OpenAI image client successfully")
+            raise ValueError("GEMINI_API_KEY environment variable not set for ImageModel.")
+        self.client = genai.Client(api_key=api_key)
+        logger.info("Initialized Gemini image client successfully")
 
     def generate_image_for_video(self, prompt: str, dir_name: str, img_name_base: str) -> str:
         """
-        Generates an image from a given prompt using OpenAI's DALL-E 3
+        Generates an image from a given prompt using Google Gemini's Imagen model
         and saves it to a JPG file.
 
         Args:
@@ -39,31 +39,30 @@ class ImageModel:
         os.makedirs(dir_name, exist_ok=True)
 
         try:
-            logger.info(f"Generating image for prompt: '{prompt[:50]}...'") # Log first 50 chars
-            response = self.client.images.generate(
-                model="dall-e-3",
-                prompt=prompt,
-                size="1024x1024", # DALL-E 3 supports 1024x1024, 1024x1792, 1792x1024
-                quality="standard", # or "hd"
-                n=1,
-            )
-            logger.info("Image generation response received.")
-            image_url = response.data[0].url
+            logger.info(f"Generating image for prompt: '{prompt[:50]}...'")  # Log first 50 chars
             
-            if not image_url:
-                raise ValueError("No image URL returned by DALL-E API.")
+            # Use Gemini's Imagen model for image generation
+            response = self.client.models.generate_images(
+                model="imagen-3.0-generate-002",
+                prompt=prompt,
+                config=genai.types.GenerateImagesConfig(
+                    number_of_images=1,
+                    aspect_ratio="1:1",
+                ),
+            )
+            
+            logger.info("Image generation response received.")
+            
+            if response.generated_images and len(response.generated_images) > 0:
+                generated_image = response.generated_images[0]
+                # Save the image from the response
+                image = Image.open(BytesIO(generated_image.image.image_bytes))
+                image.save(full_image_path)
+                logger.info(f"Saved image to {full_image_path}")
+                return full_image_path
+            else:
+                raise ValueError("No image returned by Gemini Imagen API.")
 
-            image_response = requests.get(image_url)
-            image_response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
-
-            image = Image.open(BytesIO(image_response.content))
-            image.save(full_image_path)
-            logger.info(f"Saved image to {full_image_path}")
-            return full_image_path
-        except requests.exceptions.RequestException as req_e:
-            logger.error(f"Network or HTTP error fetching image from {image_url}: {req_e}", exc_info=True)
-            self._create_dummy_image(full_image_path)
-            return full_image_path
         except Exception as e:
             logger.error(f"Error generating or saving image to {full_image_path}: {str(e)}", exc_info=True)
             self._create_dummy_image(full_image_path)
@@ -73,13 +72,11 @@ class ImageModel:
         """Creates a black dummy image if actual image generation fails."""
         try:
             # Create a 1024x1024 black image
-            dummy_image = Image.new('RGB', (1024, 1024), color = 'black')
+            dummy_image = Image.new('RGB', (1024, 1024), color='black')
             dummy_image.save(path)
             logger.warning(f"Created a black dummy image at {path} due to generation failure.")
         except Exception as dummy_e:
             logger.error(f"Failed to create dummy image at {path}: {dummy_e}")
-            # If even dummy image creation fails, there's a serious problem, but we don't re-raise
-            # to let the main process continue if possible.
 
 if __name__ == "__main__":
     # Example usage when run directly (for testing)

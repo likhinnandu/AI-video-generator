@@ -1,4 +1,4 @@
-# Story2Scene AI Video Generator
+# Automated Video Generator
 
 This project is an AI Video Generator that transforms creative text prompts into captivating videos by generating stories, images, and audio, then synchronizing them into a final video.
 
@@ -13,7 +13,7 @@ This project is an AI Video Generator that transforms creative text prompts into
 
 ##  Getting Started
 
-Follow these steps to set up and run the Story2Scene AI Video Generator on your local machine.
+Follow these steps to set up and run the Automated Video Generator on your local machine.
 
 ### Prerequisites
 
@@ -30,8 +30,8 @@ Before you begin, ensure you have the following installed:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/Chandu1234545/Story2Scene.git](https://github.com/Chandu1234545/Story2Scene.git)
-    cd Story2Scene
+    git clone [https://github.com/Chandu1234545/Automated-Video-Generator.git](https://github.com/Chandu1234545/Automated-Video-Generator.git)
+    cd Automated-Video-Generator
     ```
     *(**IMPORTANT:** Replace `your-username` with your actual GitHub username)*
 
@@ -87,7 +87,7 @@ Before you begin, ensure you have the following installed:
     Once the generation is complete, the video will appear on the page for playback. You can also click "Download Video" to save it to your local machine.
 
 ## 📁 Project Structure
-Story2Scene/
+Automated-Video-Generator/
 ├── app.py                      # Main Flask application, routes, and orchestration of AI services
 ├── story_generation.py         # Handles AI story generation (GPT models)
 ├── image_generation.py         # Manages DALL-E image generation and variations
